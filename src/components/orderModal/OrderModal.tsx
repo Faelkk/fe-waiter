@@ -2,16 +2,26 @@ import { Actions, ModalBody, OrderDetails, Overlay } from "./style";
 
 interface orderModalProps {
   visible: boolean;
-  selectedOrder: Order | null;
+  selectedOrder: OrderType | null;
+  isLoading: boolean;
   onClose: () => void;
+  onCancel: () => void;
+  onChangeOrderStatus: () => void;
 }
 
 import closeIcon from "../../assets/images/close-icon.svg";
-import { Order } from "../../types/Types";
+import { OrderType } from "../../types/Types";
 import { formatCurrency } from "../../utils/FormatCurrency";
 import { useEffect } from "react";
 
-const OrderModal = ({ visible, selectedOrder, onClose }: orderModalProps) => {
+const OrderModal = ({
+  visible,
+  selectedOrder,
+  isLoading,
+  onClose,
+  onCancel,
+  onChangeOrderStatus,
+}: orderModalProps) => {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -92,11 +102,27 @@ const OrderModal = ({ visible, selectedOrder, onClose }: orderModalProps) => {
         </OrderDetails>
 
         <Actions>
-          <button type="button" className="primary">
-            <span>👨‍🍳</span>
-            <strong>Iniciar Produção</strong>
-          </button>
-          <button type="button" className="secondary">
+          {selectedOrder.status !== "DONE" && (
+            <button
+              disabled={isLoading}
+              type="button"
+              className="primary"
+              onClick={onChangeOrderStatus}
+            >
+              {selectedOrder.status === "WAITING" ? (
+                <>
+                  <span>👨‍🍳</span>
+                  <strong>Iniciar Produção</strong>
+                </>
+              ) : (
+                <>
+                  <span>✅</span>
+                  <strong>Concluir Pedido</strong>
+                </>
+              )}
+            </button>
+          )}
+          <button type="button" className="secondary" onClick={onCancel}>
             cancelar pedido
           </button>
         </Actions>

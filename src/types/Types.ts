@@ -1,4 +1,4 @@
-export interface Order {
+export interface OrderType {
   _id: string;
   table: string;
   status: "WAITING" | "IN_PRODUCTION" | "DONE";
